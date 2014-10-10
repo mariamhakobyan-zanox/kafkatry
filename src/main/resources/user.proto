@@ -1,0 +1,11 @@
+package kafkatry;
+option java_package = "com.zanox";
+
+message Notification {
+    required string message_id = 1;
+    required string to_user = 2;
+    required string from_user_= 3;
+    optional string subject = 4;
+    required string body = 5;
+    required int64 sendOn = 6;
+}
