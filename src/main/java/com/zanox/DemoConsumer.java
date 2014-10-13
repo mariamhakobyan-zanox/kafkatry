@@ -7,7 +7,7 @@ import kafka.consumer.ConsumerConfig;
  */
 public class DemoConsumer implements Runnable{
     
-    public static void main(String argsp[]) {        
+    public static void main(String args []) {
         DemoConsumer consumer = new DemoConsumer();
         Thread t = new Thread(consumer);
         t.start();
