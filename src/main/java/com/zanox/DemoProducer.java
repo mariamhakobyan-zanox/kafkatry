@@ -10,25 +10,30 @@ import java.util.UUID;
 
 public class DemoProducer {
 
-    private static kafka.javaapi.producer.Producer<String, byte[]> producer;
-
 
     public static void main(String args[]) {
+        DemoProducer producer = new DemoProducer();
+        producer.run();
+    }
 
+    private ProducerConfig configure() {
         Properties props = new Properties();
         props.put("metadata.broker.list", "s-kafka-01.zanox.com:9092,s-kafka-02.zanox.com:9092");
-        ProducerConfig config = new ProducerConfig(props);
+        props.put("request.required.acks", "1");
+        return new ProducerConfig(props);
+    }
 
-        producer = new kafka.javaapi.producer.Producer<String, byte[]>(config);
-
+    private void run() {
+        ProducerConfig config = configure();
+        kafka.javaapi.producer.Producer<String, byte[]> producer =
+                new kafka.javaapi.producer.Producer<String, byte[]>(config);
 
         for(User.Notification notification : generateNotifications(5)) {
             producer.send(new KeyedMessage<String, byte[]>("trainingKafka", notification.toByteArray()));
         }
     }
 
-
-    protected static Iterable<User.Notification> generateNotifications(int n) {
+    private static Iterable<User.Notification> generateNotifications(int n) {
         List<User.Notification> notifications = new ArrayList<User.Notification>();
         for(int i = 0; i < n; i++) {
             notifications.add(
