@@ -1,9 +1,12 @@
 package com.zanox;
 
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 public class DemoProducer {
@@ -15,11 +18,22 @@ public class DemoProducer {
     }
 
     private ProducerConfig configure() {
-        throw new UnsupportedOperationException();
+        Properties props = new Properties();
+        props.put("metadata.broker.list", "s-kafka-01.zanox.com:9092,s-kafka-02.zanox.com:9092");
+        props.put("request.require.acks", "1");
+
+        return new ProducerConfig(props);
     }
 
     private void run() {
-        throw new UnsupportedOperationException();
+        ProducerConfig config = configure();
+
+        Producer<String, byte[]> producer = new Producer<String, byte[]>(config);
+
+        for(User.Notification notification : generateNotifications(5)) {
+            producer.send(new KeyedMessage<String, byte[]>("trainingKafka", notification.toByteArray()));
+        }
+
     }
 
     private static Iterable<User.Notification> generateNotifications(int n) {
